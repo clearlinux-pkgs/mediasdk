@@ -1,0 +1,33 @@
+From 0de0958b7d6e300bb24aa5ece1b1fe5ccdafa97d Mon Sep 17 00:00:00 2001
+From: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+Date: Mon, 8 Oct 2018 04:43:57 -0700
+Subject: [PATCH 02/15] mfx_dispatch/linux: allow MFX_IMPL_AUTO
+
+Fixes: #714
+
+This should fix cases when application initializes mediasdk
+with 0 implementation, i.e. with MFX_IMPL_AUTO.
+
+Signed-off-by: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+---
+ api/mfx_dispatch/linux/mfxloader.cpp | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/api/mfx_dispatch/linux/mfxloader.cpp b/api/mfx_dispatch/linux/mfxloader.cpp
+index 3d1dab0..872dd63 100644
+--- a/api/mfx_dispatch/linux/mfxloader.cpp
++++ b/api/mfx_dispatch/linux/mfxloader.cpp
+@@ -163,10 +163,6 @@ std::shared_ptr<void> make_dlopen(const char* filename, int flags)
+ 
+ mfxStatus LoaderCtx::Init(mfxInitParam& par)
+ {
+-  if (!MFX_IMPL_BASETYPE(par.Implementation) &&
+-      !(par.Implementation & MFX_IMPL_VIA_VAAPI)) {
+-    return MFX_ERR_UNSUPPORTED;
+-  }
+   if (par.Implementation & MFX_IMPL_AUDIO) {
+     return MFX_ERR_UNSUPPORTED;
+   }
+-- 
+2.17.2
+

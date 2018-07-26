@@ -1,0 +1,82 @@
+From 46796d0bfae9e5d02b528ca1c3fae0279a5df5c7 Mon Sep 17 00:00:00 2001
+From: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+Date: Wed, 17 Oct 2018 03:18:30 -0700
+Subject: [PATCH 15/15] build: separate configuration options of plugins .so
+ and .cfg
+
+There is desire in community to avoid placing plugins.cfg in
+/usr/lib64/mfx and place it elsewhere. This change sets default
+location for plugins.cfg as $datadir/mfx (/usr/share/mfx).
+
+Signed-off-by: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+---
+ api/mfx_dispatch/linux/CMakeLists.txt | 8 ++++----
+ api/mfx_dispatch/linux/mfxloader.cpp  | 2 +-
+ builder/FindFunctions.cmake           | 2 +-
+ builder/FindGlobals.cmake             | 4 ++++
+ 4 files changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/api/mfx_dispatch/linux/CMakeLists.txt b/api/mfx_dispatch/linux/CMakeLists.txt
+index 36d2695..d85087f 100644
+--- a/api/mfx_dispatch/linux/CMakeLists.txt
++++ b/api/mfx_dispatch/linux/CMakeLists.txt
+@@ -44,11 +44,11 @@ message( STATUS "CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}" )
+ 
+ include( GNUInstallDirs )
+ 
+-if( NOT DEFINED MFX_PLUGINS_DIR )
+-  set( MFX_PLUGINS_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/mfx )
++if( NOT DEFINED MFX_PLUGINS_CONF_DIR )
++  set( MFX_PLUGINS_CONF_DIR ${CMAKE_INSTALL_FULL_DATADIR}/mfx )
+ endif( )
+-add_definitions( -DMFX_PLUGINS_DIR="${MFX_PLUGINS_DIR}" )
+-message( STATUS "MFX_PLUGINS_DIR=${MFX_PLUGINS_DIR}" )
++add_definitions( -DMFX_PLUGINS_CONF_DIR="${MFX_PLUGINS_CONF_DIR}" )
++message( STATUS "MFX_PLUGINS_CONF_DIR=${MFX_PLUGINS_CONF_DIR}" )
+ 
+ if( NOT DEFINED MFX_MODULES_DIR )
+   set( MFX_MODULES_DIR ${CMAKE_INSTALL_FULL_LIBDIR} )
+diff --git a/api/mfx_dispatch/linux/mfxloader.cpp b/api/mfx_dispatch/linux/mfxloader.cpp
+index 872dd63..574ecd3 100644
+--- a/api/mfx_dispatch/linux/mfxloader.cpp
++++ b/api/mfx_dispatch/linux/mfxloader.cpp
+@@ -442,7 +442,7 @@ mfxStatus MFXVideoUSER_Load(mfxSession session, const mfxPluginUID *uid, mfxU32
+       if (MFX::g_GlobalCtx.m_plugins.empty()) {
+         // Parsing plugin configuration file and loading information of
+         // _all_ plugins registered on the system.
+-        parse(MFX_PLUGINS_DIR "/plugins.cfg", MFX::g_GlobalCtx.m_plugins);
++        parse(MFX_PLUGINS_CONF_DIR "/plugins.cfg", MFX::g_GlobalCtx.m_plugins);
+       }
+ 
+       // search for plugin description
+diff --git a/builder/FindFunctions.cmake b/builder/FindFunctions.cmake
+index 2cde4ea..3d03bac 100644
+--- a/builder/FindFunctions.cmake
++++ b/builder/FindFunctions.cmake
+@@ -116,7 +116,7 @@ function( create_plugins_cfg directory )
+   get_property( PLUGINS_CFG GLOBAL PROPERTY PROP_PLUGINS_CFG )
+   file(WRITE ${directory}/plugins.cfg ${PLUGINS_CFG})
+ 
+-  install( FILES ${directory}/plugins.cfg DESTINATION ${MFX_PLUGINS_DIR} )
++  install( FILES ${directory}/plugins.cfg DESTINATION ${MFX_PLUGINS_CONF_DIR} )
+ 
+ endfunction()
+ 
+diff --git a/builder/FindGlobals.cmake b/builder/FindGlobals.cmake
+index 5961d7b..1e0aed7 100644
+--- a/builder/FindGlobals.cmake
++++ b/builder/FindGlobals.cmake
+@@ -149,6 +149,10 @@ if( NOT DEFINED MFX_PLUGINS_DIR )
+   set( MFX_PLUGINS_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/mfx )
+ endif( )
+ 
++if( NOT DEFINED MFX_PLUGINS_CONF_DIR )
++  set( MFX_PLUGINS_CONF_DIR ${CMAKE_INSTALL_FULL_DATADIR}/mfx )
++endif( )
++
+ if( NOT DEFINED MFX_MODULES_DIR )
+   set( MFX_MODULES_DIR ${CMAKE_INSTALL_FULL_LIBDIR} )
+ endif( )
+-- 
+2.17.2
+

@@ -1,0 +1,92 @@
+From bb674943c4e88e5fd23a46279035a4531e077f3f Mon Sep 17 00:00:00 2001
+From: Dmitry Ermilov <dmitry.ermilov@intel.com>
+Date: Wed, 17 Oct 2018 12:48:19 -0400
+Subject: [PATCH 14/15] Get rid of plugins_eval.cfg
+
+Signed-off-by: Dmitry Ermilov <dmitry.ermilov@intel.com>
+---
+ _studio/mfx_lib/plugin/CMakeLists.txt |  2 +-
+ builder/FindFunctions.cmake           | 40 ++++++++-------------------
+ 2 files changed, 12 insertions(+), 30 deletions(-)
+
+diff --git a/_studio/mfx_lib/plugin/CMakeLists.txt b/_studio/mfx_lib/plugin/CMakeLists.txt
+index cdaa0b0..bf64866 100644
+--- a/_studio/mfx_lib/plugin/CMakeLists.txt
++++ b/_studio/mfx_lib/plugin/CMakeLists.txt
+@@ -229,7 +229,7 @@ if( DEFINED HEVC_DECODER_HW_GUID )
+   set( defs "${defs} -DMFX_PLUGIN_PRODUCT_NAME=\"\\\"${HEVC_PRODUCT_NAME}\"\\\"" )
+   set( defs "${defs} -DMFX_FILE_DESCRIPTION=\"\\\"${hw_HEVC_DECODER_DESCRIPTION}\"\\\"" )
+   set( defs "${defs} ${version_defs}" )
+-  gen_plugins_cfg("HEVC_Decoder_HW" ${HEVC_DECODER_HW_GUID} ${plugin_name} "01" "HEVC" "not_eval")
++  gen_plugins_cfg("HEVC_Decoder_HW" ${HEVC_DECODER_HW_GUID} ${plugin_name} "01" "HEVC")
+   make_library( ${plugin_name} hw shared)
+   install( TARGETS ${plugin_name} ${plugin_name} LIBRARY DESTINATION ${MFX_PLUGINS_DIR} )
+ endif()
+diff --git a/builder/FindFunctions.cmake b/builder/FindFunctions.cmake
+index e3cdba5..2cde4ea 100644
+--- a/builder/FindFunctions.cmake
++++ b/builder/FindFunctions.cmake
+@@ -21,7 +21,6 @@
+ set( CMAKE_LIB_DIR ${CMAKE_BINARY_DIR}/__lib )
+ set( CMAKE_BIN_DIR ${CMAKE_BINARY_DIR}/__bin )
+ set_property( GLOBAL PROPERTY PROP_PLUGINS_CFG "" )
+-set_property( GLOBAL PROPERTY PROP_PLUGINS_EVAL_CFG "" )
+ 
+ # .....................................................
+ function( collect_oses )
+@@ -100,41 +99,24 @@ function( gen_plugins_cfg plugin_id guid plugin_name type codecID )
+   get_mfx_version(mfx_version_major mfx_version_minor)
+   math(EXPR api_version "${mfx_version_major}*256 + ${mfx_version_minor}")
+ 
+-  if((NOT DEFINED ARGV5) OR (ARGV5 STREQUAL "eval"))
+-    get_property( PLUGINS_EVAL_CFG GLOBAL PROPERTY PROP_PLUGINS_EVAL_CFG )
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}[${plugin_id}_${guid}]\n")
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}GUID = ${guid}\n")
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}PluginVersion = 1\n")
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}APIVersion = ${api_version}\n")
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}Path = ${MFX_PLUGINS_DIR}/lib${plugin_name}.so\n")
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}Type = ${type}\n")
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}CodecID = ${codecID}\n")
+-    set(PLUGINS_EVAL_CFG "${PLUGINS_EVAL_CFG}Default = 0\n")
+-    set_property( GLOBAL PROPERTY PROP_PLUGINS_EVAL_CFG ${PLUGINS_EVAL_CFG} )
+-  endif()
+-
+-  if((NOT DEFINED ARGV5) OR (ARGV5 STREQUAL "not_eval"))
+-    get_property( PLUGINS_CFG GLOBAL PROPERTY PROP_PLUGINS_CFG )
+-    set(PLUGINS_CFG "${PLUGINS_CFG}[${plugin_id}_${guid}]\n")
+-    set(PLUGINS_CFG "${PLUGINS_CFG}GUID = ${guid}\n")
+-    set(PLUGINS_CFG "${PLUGINS_CFG}PluginVersion = 1\n")
+-    set(PLUGINS_CFG "${PLUGINS_CFG}APIVersion = ${api_version}\n")
+-    set(PLUGINS_CFG "${PLUGINS_CFG}Path = ${MFX_PLUGINS_DIR}/lib${plugin_name}.so\n")
+-    set(PLUGINS_CFG "${PLUGINS_CFG}Type = ${type}\n")
+-    set(PLUGINS_CFG "${PLUGINS_CFG}CodecID = ${codecID}\n")
+-    set(PLUGINS_CFG "${PLUGINS_CFG}Default = 0\n")
+-    set_property( GLOBAL PROPERTY PROP_PLUGINS_CFG ${PLUGINS_CFG} )
+-  endif()
++  get_property( PLUGINS_CFG GLOBAL PROPERTY PROP_PLUGINS_CFG )
++  set(PLUGINS_CFG "${PLUGINS_CFG}[${plugin_id}_${guid}]\n")
++  set(PLUGINS_CFG "${PLUGINS_CFG}GUID = ${guid}\n")
++  set(PLUGINS_CFG "${PLUGINS_CFG}PluginVersion = 1\n")
++  set(PLUGINS_CFG "${PLUGINS_CFG}APIVersion = ${api_version}\n")
++  set(PLUGINS_CFG "${PLUGINS_CFG}Path = ${MFX_PLUGINS_DIR}/lib${plugin_name}.so\n")
++  set(PLUGINS_CFG "${PLUGINS_CFG}Type = ${type}\n")
++  set(PLUGINS_CFG "${PLUGINS_CFG}CodecID = ${codecID}\n")
++  set(PLUGINS_CFG "${PLUGINS_CFG}Default = 0\n")
++  set_property( GLOBAL PROPERTY PROP_PLUGINS_CFG ${PLUGINS_CFG} )
+ 
+ endfunction()
+ 
+ function( create_plugins_cfg directory )
+   get_property( PLUGINS_CFG GLOBAL PROPERTY PROP_PLUGINS_CFG )
+-  get_property( PLUGINS_EVAL_CFG GLOBAL PROPERTY PROP_PLUGINS_EVAL_CFG )
+   file(WRITE ${directory}/plugins.cfg ${PLUGINS_CFG})
+-  file(WRITE ${directory}/plugins_eval.cfg ${PLUGINS_EVAL_CFG})
+ 
+-  install( FILES ${directory}/plugins.cfg ${directory}/plugins_eval.cfg DESTINATION ${MFX_PLUGINS_DIR} )
++  install( FILES ${directory}/plugins.cfg DESTINATION ${MFX_PLUGINS_DIR} )
+ 
+ endfunction()
+ 
+-- 
+2.17.2
+

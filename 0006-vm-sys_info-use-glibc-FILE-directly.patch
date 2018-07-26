@@ -1,0 +1,63 @@
+From d66dc472d3f86e112fcc27d41dbfd22af28fb773 Mon Sep 17 00:00:00 2001
+From: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+Date: Thu, 11 Oct 2018 08:54:56 -0700
+Subject: [PATCH 06/15] vm/sys_info: use glibc FILE directly
+
+This commit removes dependency from vm_file.
+
+Signed-off-by: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+---
+ _studio/shared/umc/core/vm/src/vm_sys_info_linux32.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/_studio/shared/umc/core/vm/src/vm_sys_info_linux32.c b/_studio/shared/umc/core/vm/src/vm_sys_info_linux32.c
+index f312264..e55caaa 100644
+--- a/_studio/shared/umc/core/vm/src/vm_sys_info_linux32.c
++++ b/_studio/shared/umc/core/vm/src/vm_sys_info_linux32.c
+@@ -21,15 +21,12 @@
+ #if defined(LINUX32)
+ 
+ #include "vm_sys_info.h"
+-#include "vm_file.h"
+ #include <time.h>
+ #include <sys/utsname.h>
+ #include <unistd.h>
+ 
+ #include <sys/sysinfo.h>
+ 
+-
+-
+ uint32_t vm_sys_info_get_cpu_num(void)
+ {
+ #if defined(ANDROID)
+@@ -50,11 +47,11 @@ void vm_sys_info_get_cpu_name(vm_char *cpu_name)
+     if (NULL == cpu_name)
+         return;
+ 
+-    pFile = vm_file_fopen(VM_STRING("/proc/cpuinfo"), "r");
++    pFile = fopen("/proc/cpuinfo", "r");
+     if (!pFile)
+         return;
+ 
+-    while ((vm_file_fgets(buf, _MAX_LEN, pFile)))
++    while (fgets(buf, _MAX_LEN, pFile))
+     {
+         if (!vm_string_strncmp(buf, VM_STRING("vendor_id"), 9))
+         {
+@@ -144,11 +141,11 @@ uint32_t vm_sys_info_get_cpu_speed(void)
+     FILE *pFile = NULL;
+     vm_char buf[PATH_MAX];
+ 
+-    pFile = vm_file_fopen(VM_STRING("/proc/cpuinfo"), "r" );
++    pFile = fopen("/proc/cpuinfo", "r" );
+     if (!pFile)
+         return 1000;
+ 
+-    while ((vm_file_fgets(buf, PATH_MAX, pFile)))
++    while (fgets(buf, PATH_MAX, pFile))
+     {
+         if (!vm_string_strncmp(buf, VM_STRING("cpu MHz"), 7))
+         {
+-- 
+2.17.2
+

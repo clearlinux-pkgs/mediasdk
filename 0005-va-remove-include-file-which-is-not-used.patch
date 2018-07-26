@@ -1,0 +1,29 @@
+From 7014a4d387d0003828ff1257d2c86740c54abef0 Mon Sep 17 00:00:00 2001
+From: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+Date: Thu, 11 Oct 2018 08:52:40 -0700
+Subject: [PATCH 05/15] va: remove include file which is not used
+
+Signed-off-by: Dmitry Rogozhkin <dmitry.v.rogozhkin@intel.com>
+---
+ _studio/shared/umc/io/umc_va/src/umc_va_linux.cpp | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/_studio/shared/umc/io/umc_va/src/umc_va_linux.cpp b/_studio/shared/umc/io/umc_va/src/umc_va_linux.cpp
+index a1d03a7..28541fa 100644
+--- a/_studio/shared/umc/io/umc_va/src/umc_va_linux.cpp
++++ b/_studio/shared/umc/io/umc_va/src/umc_va_linux.cpp
+@@ -20,11 +20,9 @@
+ 
+ #include <umc_va_base.h>
+ 
+-
+ #include "umc_defs.h"
+ #include "umc_va_linux.h"
+ #include "umc_va_video_processing.h"
+-#include "vm_file.h"
+ #include "mfx_trace.h"
+ #include "umc_frame_allocator.h"
+ #include "mfxstructures.h"
+-- 
+2.17.2
+
