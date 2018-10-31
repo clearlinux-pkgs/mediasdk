@@ -1,0 +1,9 @@
+/usr/share/mfx/samples/libmfx_wayland.so
+/usr/share/mfx/samples/libsample_rotate_plugin.so
+/usr/share/mfx/samples/sample_decode
+/usr/share/mfx/samples/sample_encode
+/usr/share/mfx/samples/sample_fei
+/usr/share/mfx/samples/sample_hevc_fei
+/usr/share/mfx/samples/sample_hevc_fei_abr
+/usr/share/mfx/samples/sample_multi_transcode
+/usr/share/mfx/samples/sample_vpp
