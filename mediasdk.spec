@@ -4,7 +4,7 @@
 #
 Name     : mediasdk
 Version  : 18.4.0
-Release  : 5
+Release  : 6
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Summary  : GoogleTest (with main() function)
@@ -30,6 +30,7 @@ BuildRequires : pkgconfig(xcb-dri3)
 BuildRequires : pkgconfig(xcb-present)
 BuildRequires : python3
 Patch1: 0001-remove-failing-test-during-compilation.patch
+Patch2: 0001-gtest-do-not-attempt-to-include-it-when-tests-are-en.patch
 
 %description
 The Google Mock class generator is an application that is part of cppclean.
@@ -83,13 +84,14 @@ license components for the mediasdk package.
 %prep
 %setup -q -n MediaSDK-intel-mediasdk-18.4.0
 %patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1549054391
+export SOURCE_DATE_EPOCH=1549407802
 mkdir -p clr-build
 pushd clr-build
 %cmake .. -DENABLE_WAYLAND=true -DENABLE_X11=true -DBUILD_TESTS=ON
@@ -104,7 +106,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 cd clr-build; make test
 
 %install
-export SOURCE_DATE_EPOCH=1549054391
+export SOURCE_DATE_EPOCH=1549407802
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
 cp LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/LICENSE
@@ -138,59 +140,6 @@ popd
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/gmock/gmock-actions.h
-/usr/include/gmock/gmock-cardinalities.h
-/usr/include/gmock/gmock-generated-actions.h
-/usr/include/gmock/gmock-generated-actions.h.pump
-/usr/include/gmock/gmock-generated-function-mockers.h
-/usr/include/gmock/gmock-generated-function-mockers.h.pump
-/usr/include/gmock/gmock-generated-matchers.h
-/usr/include/gmock/gmock-generated-matchers.h.pump
-/usr/include/gmock/gmock-generated-nice-strict.h
-/usr/include/gmock/gmock-generated-nice-strict.h.pump
-/usr/include/gmock/gmock-matchers.h
-/usr/include/gmock/gmock-more-actions.h
-/usr/include/gmock/gmock-more-matchers.h
-/usr/include/gmock/gmock-spec-builders.h
-/usr/include/gmock/gmock.h
-/usr/include/gmock/internal/custom/README.md
-/usr/include/gmock/internal/custom/gmock-generated-actions.h
-/usr/include/gmock/internal/custom/gmock-generated-actions.h.pump
-/usr/include/gmock/internal/custom/gmock-matchers.h
-/usr/include/gmock/internal/custom/gmock-port.h
-/usr/include/gmock/internal/gmock-generated-internal-utils.h
-/usr/include/gmock/internal/gmock-generated-internal-utils.h.pump
-/usr/include/gmock/internal/gmock-internal-utils.h
-/usr/include/gmock/internal/gmock-port.h
-/usr/include/gtest/gtest-death-test.h
-/usr/include/gtest/gtest-message.h
-/usr/include/gtest/gtest-param-test.h
-/usr/include/gtest/gtest-param-test.h.pump
-/usr/include/gtest/gtest-printers.h
-/usr/include/gtest/gtest-spi.h
-/usr/include/gtest/gtest-test-part.h
-/usr/include/gtest/gtest-typed-test.h
-/usr/include/gtest/gtest.h
-/usr/include/gtest/gtest_pred_impl.h
-/usr/include/gtest/gtest_prod.h
-/usr/include/gtest/internal/custom/README.md
-/usr/include/gtest/internal/custom/gtest-port.h
-/usr/include/gtest/internal/custom/gtest-printers.h
-/usr/include/gtest/internal/custom/gtest.h
-/usr/include/gtest/internal/gtest-death-test-internal.h
-/usr/include/gtest/internal/gtest-filepath.h
-/usr/include/gtest/internal/gtest-internal.h
-/usr/include/gtest/internal/gtest-linked_ptr.h
-/usr/include/gtest/internal/gtest-param-util-generated.h
-/usr/include/gtest/internal/gtest-param-util-generated.h.pump
-/usr/include/gtest/internal/gtest-param-util.h
-/usr/include/gtest/internal/gtest-port-arch.h
-/usr/include/gtest/internal/gtest-port.h
-/usr/include/gtest/internal/gtest-string.h
-/usr/include/gtest/internal/gtest-tuple.h
-/usr/include/gtest/internal/gtest-tuple.h.pump
-/usr/include/gtest/internal/gtest-type-util.h
-/usr/include/gtest/internal/gtest-type-util.h.pump
 /usr/include/mfx/mfxastructures.h
 /usr/include/mfx/mfxaudio++.h
 /usr/include/mfx/mfxaudio.h
@@ -217,20 +166,8 @@ popd
 /usr/include/mfx/mfxvp8.h
 /usr/include/mfx/mfxvp9.h
 /usr/include/mfx/mfxvstructures.h
-/usr/lib64/cmake/GTest/GTestConfig.cmake
-/usr/lib64/cmake/GTest/GTestConfigVersion.cmake
-/usr/lib64/cmake/GTest/GTestTargets-relwithdebinfo.cmake
-/usr/lib64/cmake/GTest/GTestTargets.cmake
-/usr/lib64/libgmock.so
-/usr/lib64/libgmock_main.so
-/usr/lib64/libgtest.so
-/usr/lib64/libgtest_main.so
 /usr/lib64/libmfx.so
 /usr/lib64/libmfxhw64.so
-/usr/lib64/pkgconfig/gmock.pc
-/usr/lib64/pkgconfig/gmock_main.pc
-/usr/lib64/pkgconfig/gtest.pc
-/usr/lib64/pkgconfig/gtest_main.pc
 /usr/lib64/pkgconfig/libmfx.pc
 /usr/lib64/pkgconfig/libmfxhw64.pc
 /usr/lib64/pkgconfig/mfx.pc

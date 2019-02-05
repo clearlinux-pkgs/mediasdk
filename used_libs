@@ -4,6 +4,8 @@ libdl.so.2
 libdrm.so.2
 libdrm_intel.so.1
 libgcc_s.so.1
+libgmock.so
+libgtest.so
 libm.so.6
 libpthread.so.0
 librt.so.1

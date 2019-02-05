@@ -1,0 +1,33 @@
+From 8c7949d80683564c1193546761d9b9f65e652740 Mon Sep 17 00:00:00 2001
+From: Daniel Charles <daniel.charles@intel.com>
+Date: Tue, 5 Feb 2019 14:46:19 -0800
+Subject: [PATCH] gtest: do not attempt to include it when tests are enabled
+
+Signed-off-by: Daniel Charles <daniel.charles@intel.com>
+---
+ CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7ade11cc..2fe3e926 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -113,6 +113,7 @@ if (BUILD_TESTS)
+ 
+ 
+   set (INSTALL_GTEST OFF)
++if (INSTALL_GTEST)
+   add_subdirectory(${CMAKE_HOME_DIRECTORY}/googletest)
+ 
+   # For some Linux distro versions there is an unused-result warning
+@@ -123,6 +124,7 @@ if (BUILD_TESTS)
+   target_compile_options (gmock PRIVATE "-Wno-unused-result")
+   target_compile_options (gtest_main PRIVATE "-Wno-unused-result")
+   target_compile_options (gmock_main PRIVATE "-Wno-unused-result")
++endif()
+ 
+   add_subdirectory(tests)
+ endif()
+-- 
+2.20.1
+
