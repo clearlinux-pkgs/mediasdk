@@ -4,7 +4,7 @@
 #
 Name     : mediasdk
 Version  : 18.4.0
-Release  : 8
+Release  : 9
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Summary  : GoogleTest (with main() function)
@@ -33,8 +33,22 @@ BuildRequires : python3
 Patch1: 0001-remove-failing-test-during-compilation.patch
 
 %description
-The Google Mock class generator is an application that is part of cppclean.
-For more information about cppclean, visit http://code.google.com/p/cppclean/
+# embed_isa helper tool
+embed_isa is a simple application which generates c-array from the binary kernel ISA file. Usage:
+```sh
+embed_isa <kernel_file>.isa
+```
+On the output you will get 2 files:
+1. <kernel_file>_isa.h header file of the format similar to:
+```sh
+#ifndef __<kernel_file>__
+#define __<kernel_file>__
+extern const unsigned char <kernel_file>[<size>];
+#endif
+```
+2. <kernel_file>_isa.cpp source file with the kernel c-style array in the format similar to:
+```sh
+#include "<kernel_file>_isa.h"
 
 %package data
 Summary: data components for the mediasdk package.
@@ -53,14 +67,6 @@ Provides: mediasdk-devel = %{version}-%{release}
 
 %description dev
 dev components for the mediasdk package.
-
-
-%package extras
-Summary: extras components for the mediasdk package.
-Group: Default
-
-%description extras
-extras components for the mediasdk package.
 
 
 %package lib
@@ -90,11 +96,11 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1549414663
+export SOURCE_DATE_EPOCH=1549417611
 mkdir -p clr-build
 pushd clr-build
 %cmake .. -DENABLE_WAYLAND=true -DENABLE_X11=true -DBUILD_TESTS=ON -DINSTALL_GTEST=OFF -DBUILD_MOCK=OFF
-make  %{?_smp_mflags} VERBOSE=1
+make  %{?_smp_mflags}
 popd
 
 %check
@@ -105,7 +111,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 cd clr-build; make test
 
 %install
-export SOURCE_DATE_EPOCH=1549414663
+export SOURCE_DATE_EPOCH=1549417611
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
 cp LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/LICENSE
@@ -116,26 +122,17 @@ cp googletest/googletest/LICENSE %{buildroot}/usr/share/package-licenses/mediasd
 pushd clr-build
 %make_install
 popd
+## install_append content
+rm -rf %{buildroot}/usr/share/mfx/samples
+rm -rf %{buildroot}/usr/share/mfx/tests
+## install_append end
 
 %files
 %defattr(-,root,root,-)
 
 %files data
 %defattr(-,root,root,-)
-%exclude /usr/share/mfx/samples/libmfx_wayland.so
-%exclude /usr/share/mfx/samples/libsample_rotate_plugin.so
-%exclude /usr/share/mfx/samples/sample_decode
-%exclude /usr/share/mfx/samples/sample_encode
-%exclude /usr/share/mfx/samples/sample_fei
-%exclude /usr/share/mfx/samples/sample_hevc_fei
-%exclude /usr/share/mfx/samples/sample_hevc_fei_abr
-%exclude /usr/share/mfx/samples/sample_multi_transcode
-%exclude /usr/share/mfx/samples/sample_vpp
 /usr/share/mfx/plugins.cfg
-/usr/share/mfx/samples/libcttmetrics.so
-/usr/share/mfx/samples/metrics_monitor
-/usr/share/mfx/samples/test_monitor
-/usr/share/mfx/tests/mfx_dispatch_test
 
 %files dev
 %defattr(-,root,root,-)
@@ -170,18 +167,6 @@ popd
 /usr/lib64/pkgconfig/libmfx.pc
 /usr/lib64/pkgconfig/libmfxhw64.pc
 /usr/lib64/pkgconfig/mfx.pc
-
-%files extras
-%defattr(-,root,root,-)
-/usr/share/mfx/samples/libmfx_wayland.so
-/usr/share/mfx/samples/libsample_rotate_plugin.so
-/usr/share/mfx/samples/sample_decode
-/usr/share/mfx/samples/sample_encode
-/usr/share/mfx/samples/sample_fei
-/usr/share/mfx/samples/sample_hevc_fei
-/usr/share/mfx/samples/sample_hevc_fei_abr
-/usr/share/mfx/samples/sample_multi_transcode
-/usr/share/mfx/samples/sample_vpp
 
 %files lib
 %defattr(-,root,root,-)
