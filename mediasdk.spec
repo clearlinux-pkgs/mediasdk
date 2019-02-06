@@ -4,7 +4,7 @@
 #
 Name     : mediasdk
 Version  : 18.4.0
-Release  : 6
+Release  : 7
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Summary  : GoogleTest (with main() function)
@@ -91,10 +91,10 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1549407802
+export SOURCE_DATE_EPOCH=1549411386
 mkdir -p clr-build
 pushd clr-build
-%cmake .. -DENABLE_WAYLAND=true -DENABLE_X11=true -DBUILD_TESTS=ON
+%cmake .. -DENABLE_WAYLAND=true -DENABLE_X11=true -DBUILD_TESTS=ON -DINSTALL_GTEST=OFF -DBUILD_MOCK=OFF
 make  %{?_smp_mflags} VERBOSE=1
 popd
 
@@ -106,7 +106,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 cd clr-build; make test
 
 %install
-export SOURCE_DATE_EPOCH=1549407802
+export SOURCE_DATE_EPOCH=1549411386
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
 cp LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/LICENSE
