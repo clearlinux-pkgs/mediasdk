@@ -4,7 +4,7 @@
 #
 Name     : mediasdk
 Version  : 18.4.0
-Release  : 7
+Release  : 8
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Summary  : GoogleTest (with main() function)
@@ -15,6 +15,7 @@ Requires: mediasdk-lib = %{version}-%{release}
 Requires: mediasdk-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : glibc-dev
+BuildRequires : googletest-dev
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(libdrm)
 BuildRequires : pkgconfig(libdrm_intel)
@@ -30,7 +31,6 @@ BuildRequires : pkgconfig(xcb-dri3)
 BuildRequires : pkgconfig(xcb-present)
 BuildRequires : python3
 Patch1: 0001-remove-failing-test-during-compilation.patch
-Patch2: 0001-gtest-do-not-attempt-to-include-it-when-tests-are-en.patch
 
 %description
 The Google Mock class generator is an application that is part of cppclean.
@@ -84,14 +84,13 @@ license components for the mediasdk package.
 %prep
 %setup -q -n MediaSDK-intel-mediasdk-18.4.0
 %patch1 -p1
-%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1549411386
+export SOURCE_DATE_EPOCH=1549414663
 mkdir -p clr-build
 pushd clr-build
 %cmake .. -DENABLE_WAYLAND=true -DENABLE_X11=true -DBUILD_TESTS=ON -DINSTALL_GTEST=OFF -DBUILD_MOCK=OFF
@@ -106,7 +105,7 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 cd clr-build; make test
 
 %install
-export SOURCE_DATE_EPOCH=1549411386
+export SOURCE_DATE_EPOCH=1549414663
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
 cp LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/LICENSE
