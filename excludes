@@ -1,3 +1,4 @@
 # This file contains the output files that need %exclude. Full path
 # names, one per line.
-/usr/lib64/libmfxhw64-p.so.1.28
+/usr/share/mfx/samples/libcttmetrics.so
+/usr/share/mfx/samples/metrics_monitor

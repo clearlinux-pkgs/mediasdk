@@ -7,3 +7,4 @@
 /usr/share/mfx/samples/sample_hevc_fei_abr
 /usr/share/mfx/samples/sample_multi_transcode
 /usr/share/mfx/samples/sample_vpp
+/usr/share/mfx/plugins.cfg

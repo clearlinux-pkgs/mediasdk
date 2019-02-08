@@ -4,7 +4,7 @@
 #
 Name     : mediasdk
 Version  : 18.4.0
-Release  : 10
+Release  : 11
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-18.4.0.tar.gz
 Summary  : GoogleTest (with main() function)
@@ -15,7 +15,6 @@ Requires: mediasdk-lib = %{version}-%{release}
 Requires: mediasdk-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : glibc-dev
-BuildRequires : googletest-dev
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(libdrm)
 BuildRequires : pkgconfig(libdrm_intel)
@@ -30,25 +29,10 @@ BuildRequires : pkgconfig(xcb)
 BuildRequires : pkgconfig(xcb-dri3)
 BuildRequires : pkgconfig(xcb-present)
 BuildRequires : python3
-Patch1: 0001-remove-failing-test-during-compilation.patch
 
 %description
-# embed_isa helper tool
-embed_isa is a simple application which generates c-array from the binary kernel ISA file. Usage:
-```sh
-embed_isa <kernel_file>.isa
-```
-On the output you will get 2 files:
-1. <kernel_file>_isa.h header file of the format similar to:
-```sh
-#ifndef __<kernel_file>__
-#define __<kernel_file>__
-extern const unsigned char <kernel_file>[<size>];
-#endif
-```
-2. <kernel_file>_isa.cpp source file with the kernel c-style array in the format similar to:
-```sh
-#include "<kernel_file>_isa.h"
+The Google Mock class generator is an application that is part of cppclean.
+For more information about cppclean, visit http://code.google.com/p/cppclean/
 
 %package data
 Summary: data components for the mediasdk package.
@@ -67,6 +51,14 @@ Provides: mediasdk-devel = %{version}-%{release}
 
 %description dev
 dev components for the mediasdk package.
+
+
+%package extras
+Summary: extras components for the mediasdk package.
+Group: Default
+
+%description extras
+extras components for the mediasdk package.
 
 
 %package lib
@@ -89,29 +81,21 @@ license components for the mediasdk package.
 
 %prep
 %setup -q -n MediaSDK-intel-mediasdk-18.4.0
-%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1549417611
+export SOURCE_DATE_EPOCH=1549584756
 mkdir -p clr-build
 pushd clr-build
-%cmake .. -DENABLE_WAYLAND=true -DENABLE_X11=true -DBUILD_TESTS=ON -DINSTALL_GTEST=OFF -DBUILD_MOCK=OFF
-make  %{?_smp_mflags}
+%cmake .. -DENABLE_WAYLAND=true -DENABLE_X11=true
+make  %{?_smp_mflags} VERBOSE=1
 popd
 
-%check
-export LANG=C
-export http_proxy=http://127.0.0.1:9/
-export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost,127.0.0.1,0.0.0.0
-cd clr-build; make test
-
 %install
-export SOURCE_DATE_EPOCH=1549417611
+export SOURCE_DATE_EPOCH=1549584756
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
 cp LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/LICENSE
@@ -122,17 +106,24 @@ cp googletest/googletest/LICENSE %{buildroot}/usr/share/package-licenses/mediasd
 pushd clr-build
 %make_install
 popd
-## install_append content
-rm -rf %{buildroot}/usr/share/mfx/samples
-rm -rf %{buildroot}/usr/share/mfx/tests
-## install_append end
 
 %files
 %defattr(-,root,root,-)
 
 %files data
 %defattr(-,root,root,-)
-/usr/share/mfx/plugins.cfg
+%exclude /usr/share/mfx/plugins.cfg
+%exclude /usr/share/mfx/samples/libcttmetrics.so
+%exclude /usr/share/mfx/samples/libmfx_wayland.so
+%exclude /usr/share/mfx/samples/libsample_rotate_plugin.so
+%exclude /usr/share/mfx/samples/metrics_monitor
+%exclude /usr/share/mfx/samples/sample_decode
+%exclude /usr/share/mfx/samples/sample_encode
+%exclude /usr/share/mfx/samples/sample_fei
+%exclude /usr/share/mfx/samples/sample_hevc_fei
+%exclude /usr/share/mfx/samples/sample_hevc_fei_abr
+%exclude /usr/share/mfx/samples/sample_multi_transcode
+%exclude /usr/share/mfx/samples/sample_vpp
 
 %files dev
 %defattr(-,root,root,-)
@@ -167,6 +158,19 @@ rm -rf %{buildroot}/usr/share/mfx/tests
 /usr/lib64/pkgconfig/libmfx.pc
 /usr/lib64/pkgconfig/libmfxhw64.pc
 /usr/lib64/pkgconfig/mfx.pc
+
+%files extras
+%defattr(-,root,root,-)
+/usr/share/mfx/plugins.cfg
+/usr/share/mfx/samples/libmfx_wayland.so
+/usr/share/mfx/samples/libsample_rotate_plugin.so
+/usr/share/mfx/samples/sample_decode
+/usr/share/mfx/samples/sample_encode
+/usr/share/mfx/samples/sample_fei
+/usr/share/mfx/samples/sample_hevc_fei
+/usr/share/mfx/samples/sample_hevc_fei_abr
+/usr/share/mfx/samples/sample_multi_transcode
+/usr/share/mfx/samples/sample_vpp
 
 %files lib
 %defattr(-,root,root,-)
