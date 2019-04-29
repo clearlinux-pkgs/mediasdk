@@ -143,4 +143,3 @@ libmfxhw64.so.1:MFXVideoVPP_QueryIOSurf
 libmfxhw64.so.1:MFXVideoVPP_Reset
 libmfxhw64.so.1:MFXVideoVPP_RunFrameVPPAsync
 libmfxhw64.so.1:MFXVideoVPP_RunFrameVPPAsyncEx
-libmfxhw64.so.1:libmfxhw64.so.1
