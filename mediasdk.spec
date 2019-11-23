@@ -4,17 +4,16 @@
 #
 Name     : mediasdk
 Version  : 19.2.1
-Release  : 16
+Release  : 17
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-19.2.1.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-19.2.1.tar.gz
-Summary  : GoogleMock (with main() function)
+Summary  : GoogleTest (with main() function)
 Group    : Development/Tools
 License  : Apache-2.0 BSD-3-Clause MIT
 Requires: mediasdk-lib = %{version}-%{release}
 Requires: mediasdk-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : glibc-dev
-BuildRequires : llvm
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(libdrm)
 BuildRequires : pkgconfig(libdrm_intel)
@@ -72,20 +71,17 @@ license components for the mediasdk package.
 
 %prep
 %setup -q -n MediaSDK-intel-mediasdk-19.2.1
+cd %{_builddir}/MediaSDK-intel-mediasdk-19.2.1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1570125509
+export SOURCE_DATE_EPOCH=1574467769
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
-export CC=clang
-export CXX=clang++
-export LD=ld.gold
-unset LDFLAGS
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
 export FFLAGS="$CFLAGS -fno-lto "
@@ -95,14 +91,14 @@ make  %{?_smp_mflags}  VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1570125509
+export SOURCE_DATE_EPOCH=1574467769
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
-cp LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/LICENSE
-cp googletest/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/googletest_LICENSE
-cp googletest/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/googletest_googlemock_LICENSE
-cp googletest/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/googletest_googlemock_scripts_generator_LICENSE
-cp googletest/googletest/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/googletest_googletest_LICENSE
+cp %{_builddir}/MediaSDK-intel-mediasdk-19.2.1/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/60e25f4a5bdd75aaaa1091247a05055c9c0e1e53
+cp %{_builddir}/MediaSDK-intel-mediasdk-19.2.1/googletest/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/MediaSDK-intel-mediasdk-19.2.1/googletest/googlemock/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/5a2314153eadadc69258a9429104cd11804ea304
+cp %{_builddir}/MediaSDK-intel-mediasdk-19.2.1/googletest/googlemock/scripts/generator/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
+cp %{_builddir}/MediaSDK-intel-mediasdk-19.2.1/googletest/googletest/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/5a2314153eadadc69258a9429104cd11804ea304
 pushd clr-build
 %make_install
 popd
@@ -177,8 +173,6 @@ rm -f %{buildroot}/usr/share/mfx/samples/metrics_monitor
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/mediasdk/LICENSE
-/usr/share/package-licenses/mediasdk/googletest_LICENSE
-/usr/share/package-licenses/mediasdk/googletest_googlemock_LICENSE
-/usr/share/package-licenses/mediasdk/googletest_googlemock_scripts_generator_LICENSE
-/usr/share/package-licenses/mediasdk/googletest_googletest_LICENSE
+/usr/share/package-licenses/mediasdk/1d4719e04eaa4909ab5a59ef5cb04d2a5517716e
+/usr/share/package-licenses/mediasdk/5a2314153eadadc69258a9429104cd11804ea304
+/usr/share/package-licenses/mediasdk/60e25f4a5bdd75aaaa1091247a05055c9c0e1e53
