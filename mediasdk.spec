@@ -4,16 +4,17 @@
 #
 Name     : mediasdk
 Version  : 19.2.1
-Release  : 17
+Release  : 18
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-19.2.1.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-19.2.1.tar.gz
-Summary  : GoogleTest (with main() function)
+Summary  : GoogleMock (without main() function)
 Group    : Development/Tools
 License  : Apache-2.0 BSD-3-Clause MIT
 Requires: mediasdk-lib = %{version}-%{release}
 Requires: mediasdk-license = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : glibc-dev
+BuildRequires : llvm
 BuildRequires : pkg-config
 BuildRequires : pkgconfig(libdrm)
 BuildRequires : pkgconfig(libdrm_intel)
@@ -78,10 +79,16 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1574467769
+export SOURCE_DATE_EPOCH=1575318561
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
+export CC=clang
+export CXX=clang++
+export LD=ld.gold
+CFLAGS=${CFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
+CXXFLAGS=${CXXFLAGS/ -Wa,/ -fno-integrated-as -Wa,}
+unset LDFLAGS
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$CFLAGS -fno-lto "
 export FFLAGS="$CFLAGS -fno-lto "
@@ -91,7 +98,7 @@ make  %{?_smp_mflags}  VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1574467769
+export SOURCE_DATE_EPOCH=1575318561
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
 cp %{_builddir}/MediaSDK-intel-mediasdk-19.2.1/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/60e25f4a5bdd75aaaa1091247a05055c9c0e1e53
