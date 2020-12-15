@@ -4,7 +4,7 @@
 #
 Name     : mediasdk
 Version  : 19.4.0
-Release  : 21
+Release  : 22
 URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-19.4.0.tar.gz
 Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-19.4.0.tar.gz
 Summary  : GoogleTest (with main() function)
