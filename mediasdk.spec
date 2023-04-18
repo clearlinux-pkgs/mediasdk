@@ -4,10 +4,10 @@
 # Using build pattern: cmake
 #
 Name     : mediasdk
-Version  : 23.1.6
-Release  : 67
-URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-23.1.6/MediaSDK-23.1.6.tar.gz
-Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-23.1.6/MediaSDK-23.1.6.tar.gz
+Version  : 23.2.0
+Release  : 68
+URL      : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-23.2.0/MediaSDK-23.2.0.tar.gz
+Source0  : https://github.com/Intel-Media-SDK/MediaSDK/archive/intel-mediasdk-23.2.0/MediaSDK-23.2.0.tar.gz
 Summary  : GoogleTest (with main() function)
 Group    : Development/Tools
 License  : Apache-2.0 BSD-3-Clause MIT
@@ -78,15 +78,15 @@ license components for the mediasdk package.
 
 
 %prep
-%setup -q -n MediaSDK-intel-mediasdk-23.1.6
-cd %{_builddir}/MediaSDK-intel-mediasdk-23.1.6
+%setup -q -n MediaSDK-intel-mediasdk-23.2.0
+cd %{_builddir}/MediaSDK-intel-mediasdk-23.2.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1680618765
+export SOURCE_DATE_EPOCH=1681829803
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -106,7 +106,7 @@ make  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1680618765
+export SOURCE_DATE_EPOCH=1681829803
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/mediasdk
 cp %{_builddir}/MediaSDK-intel-mediasdk-%{version}/LICENSE %{buildroot}/usr/share/package-licenses/mediasdk/60e25f4a5bdd75aaaa1091247a05055c9c0e1e53 || :
